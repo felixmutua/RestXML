@@ -10,6 +10,9 @@ public class XmlRestApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(XmlRestApplication.class, args);
+
+        System.setProperty("javax.net.ssl.trustStoreType", "jks");
+        System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
     }
 
 
