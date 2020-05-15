@@ -1,18 +1,12 @@
 package com.xmlrest.api.b2c.client;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import javax.net.ssl.SSLContext;
 
 @Component
 @Log4j2
