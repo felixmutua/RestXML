@@ -50,7 +50,7 @@ public class ApplicationConfiguration {
         return restTemplateBuilder
                 .requestFactory(() -> customRequestFactory)
                 .setConnectTimeout(Duration.ofSeconds(20))
-                .setReadTimeout(Duration.ofSeconds(20))
+                .setReadTimeout(Duration.ofSeconds(30))
                 .build();
     }
 }
