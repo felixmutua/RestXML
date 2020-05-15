@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 @RequestMapping("/api")
 @Log4j2
-public class XmlServiceController {
+public class ClientController {
 
     @Autowired
     private ServerClient serverClient;

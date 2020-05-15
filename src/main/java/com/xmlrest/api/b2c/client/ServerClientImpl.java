@@ -18,15 +18,10 @@ import javax.net.ssl.SSLContext;
 @Log4j2
 public class ServerClientImpl implements ServerClient {
 
-
-    @Autowired
-    private SSLContext serverSSLContext;
-
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
     public String callServer(String xmlPayload) {
-        restTemplate.setRequestFactory(createHttpComponentsClientHttpRequestFactory(serverSSLContext));
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_XML);
@@ -40,12 +35,4 @@ public class ServerClientImpl implements ServerClient {
         return restTemplate.getForObject("https://172.23.115.140:7178/service/b2c", String.class);
     }
 
-
-    private HttpComponentsClientHttpRequestFactory createHttpComponentsClientHttpRequestFactory(SSLContext sslContext) {
-        HttpClient client = HttpClients.custom()
-                .setSSLContext(sslContext)
-                .build();
-
-        return new HttpComponentsClientHttpRequestFactory(client);
-    }
 }
