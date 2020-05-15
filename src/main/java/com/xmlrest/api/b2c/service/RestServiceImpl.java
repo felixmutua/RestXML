@@ -18,10 +18,10 @@ import java.nio.charset.Charset;
 @Service
 public class RestServiceImpl implements RestService_I {
     @Override
-    public String post(String s) {
+    public String post(String params) {
 
         try {
-            JSONObject response = URLPost("https://172.23.115.140:7178/service/b2c" );
+            JSONObject response = URLPost("https://172.23.115.140:7178/service/b2c",params );
             assert response != null;
             return response.toString();
         } catch (Exception e) {
@@ -29,18 +29,19 @@ public class RestServiceImpl implements RestService_I {
         }
     }
 
-    private JSONObject URLPost(String link) {
-        return isHttps(link) ? HttpsPost(link) : null;
+    private JSONObject URLPost(String link, String params) throws JSONException {
+
+        return isHttps(link) ? HttpsPost(link, params) : null;
     }
 
-    private JSONObject HttpsPost(String link) throws JSONException {
+    private JSONObject HttpsPost(String link,String params) throws JSONException {
         try {
             StringBuilder sb;
             SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
             URL url = new URL(link);
             HttpsURLConnection urlConn = (HttpsURLConnection) url.openConnection();
             urlConn.setSSLSocketFactory(sslsocketfactory);
-            urlConn = this.setHttpsHeaders(urlConn);
+            urlConn = this.setHttpsHeaders(urlConn, params);
 
                 if (urlConn != null) {
                     try (InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), Charset.defaultCharset())) {
@@ -58,16 +59,16 @@ public class RestServiceImpl implements RestService_I {
         }
     }
 
-    private HttpsURLConnection setHttpsHeaders(HttpsURLConnection urlConnection) {
+    private HttpsURLConnection setHttpsHeaders(HttpsURLConnection urlConnection,String parameters) {
         try {
 
             urlConnection.setRequestProperty("Content-type", "application/xml");
-
-
-            urlConnection.setDoOutput(true);
-
-            try (OutputStream outputStream = urlConnection.getOutputStream()) {
-                outputStream.flush();
+            if (parameters != null) {
+                urlConnection.setDoOutput(true);
+                try (OutputStream outputStream = urlConnection.getOutputStream()) {
+                    outputStream.write(parameters.getBytes());
+                    outputStream.flush();
+                }
             }
 
             return urlConnection;
@@ -77,37 +78,6 @@ public class RestServiceImpl implements RestService_I {
             System.out.print("We have an error" + e.getMessage());
         }
         return null;
-    }
-    private StringBuilder doGet(HttpsURLConnection urlConnection, String method, String token) {
-        try {
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setRequestProperty("X-Vault-Token", token);
-            int responseCode = urlConnection.getResponseCode();
-            System.out.println("GET Response Code :: " + responseCode);
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                // print result
-                System.out.println(response.toString());
-                return  response;
-            } else {
-                System.out.println("GET request not worked");
-            }
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-
     }
 
         private StringBuilder readInputStream(InputStreamReader in) {
