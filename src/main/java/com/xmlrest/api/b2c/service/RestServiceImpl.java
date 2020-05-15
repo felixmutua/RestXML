@@ -1,5 +1,6 @@
 package com.xmlrest.api.b2c.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -10,18 +11,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
 @Service
+@Log4j2
 public class RestServiceImpl implements RestService_I {
     @Override
     public String post(String params) {
 
         try {
-            JSONObject response = URLPost("https://172.23.115.140:7178/service/b2c",params );
+            log.info("Initiate connection to the url");
+            JSONObject response = URLPost(params );
             assert response != null;
             return response.toString();
         } catch (Exception e) {
@@ -29,39 +31,39 @@ public class RestServiceImpl implements RestService_I {
         }
     }
 
-    private JSONObject URLPost(String link, String params) throws JSONException {
+    private JSONObject URLPost(String params) throws JSONException {
 
-        return isHttps(link) ? HttpsPost(link, params) : null;
+        return isHttps() ? HttpsPost(params) : null;
     }
 
-    private JSONObject HttpsPost(String link,String params) throws JSONException {
+    private JSONObject HttpsPost(String params) throws JSONException {
         try {
             StringBuilder sb;
             SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            URL url = new URL(link);
+            URL url = new URL("https://172.23.115.140:7178/service/b2c");
             HttpsURLConnection urlConn = (HttpsURLConnection) url.openConnection();
             urlConn.setSSLSocketFactory(sslsocketfactory);
             urlConn = this.setHttpsHeaders(urlConn, params);
 
                 if (urlConn != null) {
+                    log.info("Connection Established");
                     try (InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), Charset.defaultCharset())) {
                         sb = this.readInputStream(in);
                         return sb != null ? new JSONObject(sb.toString().trim()) : null;
                     }
                 } else {
-                    System.out.println("We have an empty (null) connection to the url");
+                   log.error("We have an empty (null) connection to the url");
                     return null;
                 }
 
         } catch (IOException ioe) {
-            System.out.println("We have an IO exception" + ioe.getMessage());
+            log.error("We have an IO exception" + ioe.getMessage());
             return null;
         }
     }
 
     private HttpsURLConnection setHttpsHeaders(HttpsURLConnection urlConnection,String parameters) {
         try {
-
             urlConnection.setRequestProperty("Content-type", "application/xml");
             if (parameters != null) {
                 urlConnection.setDoOutput(true);
@@ -70,12 +72,13 @@ public class RestServiceImpl implements RestService_I {
                     outputStream.flush();
                 }
             }
-
+            log.warn("We have a urlConnection" +urlConnection.getResponseMessage());
+            log.warn("We have a urlConnection" +urlConnection.getContentType());
             return urlConnection;
         } catch (ProtocolException pe) {
-            System.out.print("We have an error setting up headers for the connection" + pe.getMessage());
+            log.error("We have an error setting up headers for the connection" + pe.getMessage());
         } catch (IOException e) {
-            System.out.print("We have an error" + e.getMessage());
+            log.error("We have an error" + e.getMessage());
         }
         return null;
     }
@@ -95,7 +98,7 @@ public class RestServiceImpl implements RestService_I {
         }
     }
 
-    private boolean isHttps(String link) {
-        return link.trim().substring(0, Math.min(link.length(), 5)).equalsIgnoreCase("HTTPS");
+    private boolean isHttps() {
+        return "https://172.23.115.140:7178/service/b2c".trim().substring(0, Math.min("https://172.23.115.140:7178/service/b2c".length(), 5)).equalsIgnoreCase("HTTPS");
     }
 }
