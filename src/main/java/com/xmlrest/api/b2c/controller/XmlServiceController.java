@@ -1,10 +1,12 @@
 package com.xmlrest.api.b2c.controller;
 
-import com.xmlrest.api.b2c.service.RestService_I;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 
 @RestController
@@ -12,11 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 public class XmlServiceController {
 
-    private final RestService_I restService_i;
-
-    public XmlServiceController(RestService_I restService_i) {
-        this.restService_i = restService_i;
-    }
+    @Autowired
+    RestTemplate restTemplate;
 
     @PostMapping("/payload")
     public String getPayload() {
@@ -32,7 +31,25 @@ public class XmlServiceController {
                 "    <PASSWORD>test@123</PASSWORD>\n" +
                 "    <REFERENCE1>reference1</REFERENCE1>\n" +
                 "</COMMAND>";
-        return restService_i.post(xmlString);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_XML);
+        httpHeaders.setCacheControl(CacheControl.noCache());
+
+        HttpEntity<?> httpEntity = new HttpEntity<>(xmlString, httpHeaders);
+
+        String url=  "https://172.23.115.140:7178/service/b2c";
+
+        log.info("Headers"+httpEntity.getHeaders());
+        log.info("Body"+httpEntity.getBody());
+
+        ;
+        ResponseEntity<String> response =
+                restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+
+        log.info("Response code"+response.getStatusCode());
+        log.info("Response Body"+response.getBody());
+        return response.getBody();
     }
 
 
