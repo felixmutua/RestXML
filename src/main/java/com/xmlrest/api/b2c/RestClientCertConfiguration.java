@@ -14,7 +14,7 @@ import java.io.IOException;
 @Configuration
 public class RestClientCertConfiguration {
 
-    private final char[] serverKeyPass= "secret".toCharArray();
+    private final char[] serverKeyPass= "".toCharArray();
     private final char[] clientPassword = "secret".toCharArray();
 
     @Value("classpath:keystore.p12")
