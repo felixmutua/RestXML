@@ -17,7 +17,7 @@ public class RestClientCertConfiguration {
     private final char[] serverKeyPass= "secret".toCharArray();
     private final char[] clientPassword = "secret".toCharArray();
 
-    @Value("classpath:serveridentity.jks")
+    @Value("classpath:keystore.p12")
     private Resource serverIdentity;
 
     @Value("classpath:clienttruststore.jks")

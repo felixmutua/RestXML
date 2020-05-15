@@ -28,8 +28,6 @@ public class ServerClientImpl implements ServerClient {
     public String callServer(String xmlPayload) {
         restTemplate.setRequestFactory(createHttpComponentsClientHttpRequestFactory(serverSSLContext));
 
-
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_XML);
         httpHeaders.setCacheControl(CacheControl.noCache());
