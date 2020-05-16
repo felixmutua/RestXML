@@ -22,21 +22,7 @@ public class ClientController {
     public String getPayload() {
 
         log.info("/api/payload");
-
-        String xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?><COMMAND>\n" +
-                "    <TYPE>B2C</TYPE>\n" +
-                "    <CUSTOMERMSISDN>786812555</CUSTOMERMSISDN>\n" +
-                "    <MERCHANTMSISDN>000000794</MERCHANTMSISDN>\n" +
-                "    <AMOUNT>10</AMOUNT>\n" +
-                "    <PIN>1234</PIN>\n" +
-                "    <REFERENCE>xxtest2</REFERENCE>\n" +
-                "    <USERNAME>test</USERNAME>\n" +
-                "    <PASSWORD>test@123</PASSWORD>\n" +
-                "    <REFERENCE1>reference1</REFERENCE1>\n" +
-                "</COMMAND>";
-
-        log.info("Callin server wit payload" +xmlString);
-        String serverResponse = serverClient.callServer(xmlString);
+        String serverResponse = serverClient.callServer();
         log.info("Server called - Response"+serverResponse);
         return String.format("Server called - Response '%s' ", serverResponse);
 
