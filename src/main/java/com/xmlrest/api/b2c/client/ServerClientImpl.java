@@ -1,6 +1,7 @@
 package com.xmlrest.api.b2c.client;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,11 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class ServerClientImpl implements ServerClient {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public ServerClientImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public String callServer(String xmlPayload) {
@@ -23,7 +28,6 @@ public class ServerClientImpl implements ServerClient {
         HttpEntity<?> httpEntity = new HttpEntity<>(xmlPayload, httpHeaders);
 
         log.info("Headers"+httpEntity.getHeaders());
-        log.info("Body"+httpEntity.getBody());
 
         ResponseEntity<String> response =
                 restTemplate.exchange("https://172.23.115.140:7178/service/b2c", HttpMethod.POST, httpEntity, String.class);
