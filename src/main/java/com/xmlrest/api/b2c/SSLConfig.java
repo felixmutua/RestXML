@@ -9,13 +9,18 @@ import java.util.Objects;
 
 @Configuration
 public class SSLConfig {
+
+    @Autowired
+    private Environment env;
+
+
     @PostConstruct
     private void configureSSL() {
         //set to TLSv1.1 or TLSv1.2
         System.setProperty("https.protocols", "TLSv1.2");
 
-        System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(SSLConfig.class.getClassLoader().getResource("clientkeystore.jks")).getFile());
-        System.setProperty("javax.net.ssl.trustStorePassword","secret" );
+        System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(env.getProperty("server.ssl.trust-store")));
+        System.setProperty("javax.net.ssl.trustStorePassword", Objects.requireNonNull(env.getProperty("server.ssl.trust-store-password")));
 
     }
 }
