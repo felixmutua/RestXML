@@ -15,8 +15,6 @@ public class XmlRestApplication {
     static {
         System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(XmlRestApplication.class.getClassLoader().getResource("ca-truststore.jks")).getFile());
         System.setProperty("javax.net.ssl.trustStorePassword", KEYSTORE_PASSWORD);
-        System.setProperty("javax.net.ssl.keyStore", Objects.requireNonNull(XmlRestApplication.class.getClassLoader().getResource("ca-truststore.jks")).getFile());
-        System.setProperty("javax.net.ssl.keyStorePassword", KEYSTORE_PASSWORD);
 
         HttpsURLConnection.setDefaultHostnameVerifier(
                 (hostname, sslSession) -> hostname.equals("localhost"));
