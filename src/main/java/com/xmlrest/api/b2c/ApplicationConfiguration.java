@@ -1,27 +1,19 @@
 package com.xmlrest.api.b2c;
 
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
-import org.apache.http.ssl.TrustStrategy;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.net.ssl.SSLContext;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.time.Duration;
-import java.util.Objects;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -54,24 +46,22 @@ public class ApplicationConfiguration {
 //                .build();
 //    }
 @Bean
-public RestTemplate restTemplate()
-        throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-    TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+public RestTemplate restTemplate() throws KeyStoreException, IOException, UnrecoverableKeyException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+    KeyStore clientStore = KeyStore.getInstance("PKCS12");
+    clientStore.load(new FileInputStream("/etc/pki/tls/certs/B2C.cer"), "changeit".toCharArray());
 
-    SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-            .loadTrustMaterial(null, acceptingTrustStrategy)
-            .build();
+    SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
+    sslContextBuilder.useProtocol("TLS");
+    sslContextBuilder.loadKeyMaterial(clientStore, "changeit".toCharArray());
+    sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());
 
-    SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-
+    SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
     CloseableHttpClient httpClient = HttpClients.custom()
-            .setSSLSocketFactory(csf)
+            .setSSLSocketFactory(sslConnectionSocketFactory)
             .build();
-
-    HttpComponentsClientHttpRequestFactory requestFactory =
-            new HttpComponentsClientHttpRequestFactory();
-
-    requestFactory.setHttpClient(httpClient);
+    HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+    requestFactory.setConnectTimeout(10000); // 10 seconds
+    requestFactory.setReadTimeout(10000); // 10 seconds
     return new RestTemplate(requestFactory);
 }
 }
