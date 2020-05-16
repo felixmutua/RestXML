@@ -20,6 +20,7 @@ public class ClientController {
 
     @PostMapping("/payload")
     public String getPayload() {
+
         log.info("/api/payload");
 
         String xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?><COMMAND>\n" +
@@ -34,7 +35,9 @@ public class ClientController {
                 "    <REFERENCE1>reference1</REFERENCE1>\n" +
                 "</COMMAND>";
 
+        log.info("Callin server wit payload" +xmlString);
         String serverResponse = serverClient.callServer(xmlString);
+        log.info("Server called - Response"+serverResponse);
         return String.format("Server called - Response '%s' ", serverResponse);
 
 
