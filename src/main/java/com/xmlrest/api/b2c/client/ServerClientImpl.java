@@ -26,11 +26,11 @@ public class ServerClientImpl implements ServerClient {
         System.out.println("MagicDude4Eva 2-way / mutual SSL-authentication test");
 
         try {
-            String KEY_ALIAS = "client", CERT_PASSWORD_1 = "1234567890",CERT_PASSWORD= "secret";
+            String KEY_ALIAS = "client", CERT_PASSWORD= "1234567890";
 
             KeyStore identityKeyStore = KeyStore.getInstance("jks");
             FileInputStream identityKeyStoreFile = new FileInputStream(new File("/home/ec2-user/certs/identity.jks"));
-            identityKeyStore.load(identityKeyStoreFile, CERT_PASSWORD_1.toCharArray());
+            identityKeyStore.load(identityKeyStoreFile, CERT_PASSWORD.toCharArray());
 
             KeyStore trustKeyStore = KeyStore.getInstance("jks");
             FileInputStream trustKeyStoreFile = new FileInputStream(new File("/home/ec2-user/truststore.jks"));
@@ -38,7 +38,7 @@ public class ServerClientImpl implements ServerClient {
 
             SSLContext sslContext = SSLContexts.custom()
                     // load identity keystore
-                    .loadKeyMaterial(identityKeyStore, CERT_PASSWORD_1.toCharArray(), (aliases, socket) -> {
+                    .loadKeyMaterial(identityKeyStore, CERT_PASSWORD.toCharArray(), (aliases, socket) -> {
                         return KEY_ALIAS; //client
                     })
                     // load trust keystore
