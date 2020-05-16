@@ -3,9 +3,24 @@ package com.xmlrest.api.b2c;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import java.util.Objects;
+
 
 @SpringBootApplication
 public class XmlRestApplication {
+
+
+    private final static String KEYSTORE_PASSWORD = "secret";
+
+    static {
+        System.setProperty("javax.net.ssl.trustStore", Objects.requireNonNull(XmlRestApplication.class.getClassLoader().getResource("clientkeystore.jks")).getFile());
+        System.setProperty("javax.net.ssl.trustStorePassword", KEYSTORE_PASSWORD);
+    }
+
+
             public static void main (String[] args)  {
 
 
