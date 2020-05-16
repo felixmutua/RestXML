@@ -26,14 +26,14 @@ public class ServerClientImpl implements ServerClient {
         System.out.println("MagicDude4Eva 2-way / mutual SSL-authentication test");
 
         try {
-            String KEY_ALIAS = "client", CERT_PASSWORD= "1234567890";
+            String KEY_ALIAS = "servercert", CERT_PASSWORD= "1234567890";
 
             KeyStore identityKeyStore = KeyStore.getInstance("jks");
-            FileInputStream identityKeyStoreFile = new FileInputStream(new File("/home/ec2-user/certs/identity.jks"));
+            FileInputStream identityKeyStoreFile = new FileInputStream(new File("/home/ec2-user/client.jks"));
             identityKeyStore.load(identityKeyStoreFile, CERT_PASSWORD.toCharArray());
 
             KeyStore trustKeyStore = KeyStore.getInstance("jks");
-            FileInputStream trustKeyStoreFile = new FileInputStream(new File("/home/ec2-user/truststore.jks"));
+            FileInputStream trustKeyStoreFile = new FileInputStream(new File("/home/ec2-user/client.jks"));
             trustKeyStore.load(trustKeyStoreFile, CERT_PASSWORD.toCharArray());
 
             SSLContext sslContext = SSLContexts.custom()
