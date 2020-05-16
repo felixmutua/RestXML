@@ -1,6 +1,5 @@
 package com.xmlrest.api.b2c.client;
 
-import com.xmlrest.api.b2c.client.ServerClient;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -8,16 +7,15 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.PrivateKeyDetails;
-import org.apache.http.ssl.PrivateKeyStrategy;
 import org.apache.http.ssl.SSLContexts;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.SSLContext;
-import java.io.*;
-import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.security.KeyStore;
-import java.util.Map;
 
 @Log4j2
 @Service
