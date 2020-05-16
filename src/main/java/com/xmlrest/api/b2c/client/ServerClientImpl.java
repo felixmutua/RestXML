@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @Log4j2
 public class ServerClientImpl implements ServerClient {
 
+
+
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
