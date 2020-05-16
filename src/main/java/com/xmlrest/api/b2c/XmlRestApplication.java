@@ -60,7 +60,7 @@ public class XmlRestApplication {
     public static void main (String[] args) throws Exception {
         String host="172.23.115.140";
         int port=7178;
-        String p="Admin123#@!";
+        String p="changeit";
         char[] passphrase=p.toCharArray();
 
         File file = new File("jssecacerts");
